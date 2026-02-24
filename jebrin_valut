@@ -1,0 +1,2130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vault – Ultra Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      /* Light, easy-to-read theme */
+      --bg: #f3f4f6;
+      --bg-elevated: #ffffff;
+      --bg-elevated-soft: #e5e7eb;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.12);
+      --accent-strong: rgba(37, 99, 235, 0.35);
+      --accent-alt: #16a34a;
+      --border-subtle: rgba(148, 163, 184, 0.5);
+      --text: #111827;
+      --text-soft: #4b5563;
+      --text-muted: #6b7280;
+      --danger: #b91c1c;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.85);
+      --shadow-chip: 0 6px 18px rgba(15, 23, 42, 0.85);
+      --input-bg: rgba(15, 23, 42, 0.7);
+      --input-border: rgba(148, 163, 184, 0.4);
+      --focus-ring: 0 0 0 1px rgba(148, 163, 184, 0.7), 0 0 0 3px rgba(79, 70, 229, 0.4);
+      --transition-fast: 0.15s ease-out;
+      --transition-med: 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .vault-shell {
+      width: 100%;
+      max-width: 1180px;
+      background: var(--bg-elevated);
+      border-radius: 32px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .vault-shell::before {
+      content: none;
+    }
+
+    .vault-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      grid-template-columns: 280px 1fr;
+      grid-template-areas:
+        "header header"
+        "sidebar main";
+      gap: 18px;
+      padding: 20px 22px 22px;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 16px;
+      }
+      .vault-inner {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "header"
+          "main";
+      }
+      .sidebar {
+        display: none;
+      }
+      .vault-shell {
+        border-radius: 24px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .vault-inner {
+        padding: 16px;
+      }
+    }
+
+    /* HEADER */
+
+    .vault-header {
+      grid-area: header;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px 4px;
+      border-radius: 999px;
+      background: var(--bg-elevated-soft);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .vault-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.85);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .vault-logo-inner {
+      width: 68%;
+      height: 68%;
+      border-radius: 12px;
+      background:
+        radial-gradient(circle at 30% 0%, rgba(248, 250, 252, 0.9), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(15, 23, 42, 0.9), transparent 55%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .header-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .header-title-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .vault-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+
+    .vault-subtitle {
+      font-size: 11px;
+      color: var(--text-soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .meta-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-strong);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-soft);
+      box-shadow: var(--shadow-chip);
+    }
+
+    .meta-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0%, #a5b4fc, #4f46e5);
+      box-shadow: 0 0 12px rgba(129, 140, 248, 0.7);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-search {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: #eef2ff;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .header-search input {
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 12px;
+      width: 170px;
+    }
+
+    @media (max-width: 640px) {
+      .header-search input {
+        width: 120px;
+      }
+    }
+
+    .header-search input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1px 5px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: #e5e7eb;
+      font-size: 10px;
+      color: var(--text-muted);
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.85);
+    }
+
+    .header-cta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 13px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), opacity 0.12s ease-in-out;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+      border: 1px solid var(--accent-strong);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 13px 30px rgba(59, 130, 246, 0.9);
+      color: #020617;
+    }
+
+    .btn-ghost {
+      background: #e5e7eb;
+      color: var(--text-soft);
+      border: 1px solid var(--border-subtle);
+      box-shadow: none;
+    }
+
+    .btn-ghost:hover {
+      background: #d1d5db;
+      color: var(--text);
+      border-color: rgba(129, 140, 248, 0.85);
+      transform: translateY(-1px);
+    }
+
+    .btn-icon {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border-radius: 999px;
+      background: #e5e7eb;
+      border: 1px solid var(--border-subtle);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-soft);
+      font-size: 13px;
+      box-shadow: 0 7px 18px rgba(15, 23, 42, 0.9);
+    }
+
+    .btn-icon:hover {
+      background: rgba(15, 23, 42, 1);
+      color: #e5e7eb;
+      border-color: rgba(129, 140, 248, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.85);
+    }
+
+    /* SIDEBAR */
+
+    .sidebar {
+      grid-area: sidebar;
+      border-radius: 20px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      box-shadow: none;
+      padding: 14px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .sidebar-section-label {
+      font-size: 11px;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 0 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-section-label span:last-child {
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .folder-list {
+      margin-top: 4px;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
+    }
+
+    .folder-list::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .folder-list::-webkit-scrollbar-thumb {
+      background: radial-gradient(circle at 0 50%, rgba(148, 163, 184, 0.8), rgba(55, 65, 81, 0.9));
+      border-radius: 999px;
+    }
+
+    .folder-item {
+      border-radius: 999px;
+      padding: 7px 9px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      background: #f9fafb;
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity 0.15s ease-out;
+      position: relative;
+    }
+
+    .folder-item:hover {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(129, 140, 248, 0.9);
+      box-shadow: var(--shadow-chip);
+      transform: translateY(-1px);
+    }
+
+    .folder-item.active {
+      background: #dbeafe;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.4);
+    }
+
+    .folder-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .folder-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 0 0, rgba(191, 219, 254, 0.95), #4f46e5);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #020617;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.95);
+    }
+
+    .folder-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .folder-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: #e5e7eb;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .folder-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .folder-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.12s ease-in-out;
+    }
+
+    .folder-item:hover .folder-actions {
+      opacity: 1;
+    }
+
+    .folder-item.active .folder-actions {
+      opacity: 1;
+    }
+
+    .icon-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .icon-btn:hover {
+      background: rgba(30, 64, 175, 0.7);
+      border-color: rgba(191, 219, 254, 0.9);
+      color: #e5e7eb;
+      transform: translateY(-0.5px);
+    }
+
+    .icon-btn.danger:hover {
+      background: rgba(239, 68, 68, 0.9);
+      border-color: rgba(254, 202, 202, 0.9);
+      color: #0b1020;
+    }
+
+    .sidebar-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.45);
+      gap: 8px;
+    }
+
+    .sidebar-foot-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .sidebar-foot-left span:last-child {
+      color: var(--text-soft);
+      font-size: 10px;
+    }
+
+    .sidebar-foot-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #22c55e, #16a34a);
+      box-shadow: 0 0 12px rgba(74, 222, 128, 0.7);
+    }
+
+    /* MAIN */
+
+    .main {
+      grid-area: main;
+      border-radius: 20px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      box-shadow: none;
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .main-heading-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .main-heading-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .breadcrumb {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .breadcrumb span.current {
+      color: var(--text-soft);
+    }
+
+    .heading-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .heading-pill {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .main-heading-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chip strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .main-body {
+      position: relative;
+      border-radius: 14px;
+      background: #f9fafb;
+      border: 1px solid var(--border-subtle);
+      box-shadow: none;
+      padding: 12px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 260px;
+      overflow: hidden;
+    }
+
+    .main-body::before {
+      content: none;
+    }
+
+    .main-body-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .main-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #38bdf8;
+    }
+
+    .divider {
+      width: 1px;
+      height: 24px;
+      background: linear-gradient(to bottom, transparent, rgba(148, 163, 184, 0.7), transparent);
+      opacity: 0.6;
+    }
+
+    .keys-container {
+      margin-top: 4px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      box-shadow: none;
+      padding: 8px 7px 7px;
+      min-height: 220px;
+      max-height: 420px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.75) transparent;
+    }
+
+    .keys-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .keys-container::-webkit-scrollbar-thumb {
+      background: linear-gradient(to bottom, rgba(148, 163, 184, 0.9), rgba(55, 65, 81, 0.95));
+      border-radius: 999px;
+    }
+
+    .empty-state {
+      height: 210px;
+      border-radius: 10px;
+      border: 1px dashed var(--border-subtle);
+      background: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-align: center;
+      color: var(--text-soft);
+      font-size: 13px;
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.9);
+    }
+
+    .empty-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 18px;
+      background: radial-gradient(circle at 0 0, rgba(191, 219, 254, 1), rgba(59, 130, 246, 1));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #020617;
+      font-size: 22px;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.95);
+    }
+
+    .empty-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .empty-subtitle {
+      max-width: 260px;
+    }
+
+    .keys-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 8px;
+    }
+
+    .key-card {
+      position: relative;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      box-shadow: none;
+      padding: 8px 8px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+      transition: transform var(--transition-med), box-shadow var(--transition-med), border-color var(--transition-med), background var(--transition-med);
+    }
+
+    .key-card:hover {
+      transform: translateY(-1px) translateZ(0);
+      box-shadow: 0 6px 12px rgba(15, 23, 42, 0.12);
+      border-color: var(--accent);
+      background: #eff6ff;
+    }
+
+    .key-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .key-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .key-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #e5e7eb;
+      min-width: 0;
+    }
+
+    .key-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 0 0, #a5b4fc, #4f46e5);
+      box-shadow: 0 0 12px rgba(129, 140, 248, 0.85);
+    }
+
+    .key-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .key-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .key-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pill-btn {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.98);
+      color: var(--text-soft);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .pill-btn:hover {
+      background: rgba(30, 64, 175, 0.9);
+      border-color: rgba(191, 219, 254, 0.95);
+      color: #e5e7eb;
+      transform: translateY(-1px);
+    }
+
+    .pill-btn.danger:hover {
+      background: rgba(248, 113, 113, 0.98);
+      border-color: rgba(254, 202, 202, 0.95);
+      color: #0b1020;
+    }
+
+    .key-body {
+      border-radius: 8px;
+      background: #f9fafb;
+      border: 1px solid var(--border-subtle);
+      padding: 6px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .key-value {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      background: #ffffff;
+      color: var(--text);
+      font-size: 12px;
+      padding: 4px 6px;
+      outline: none;
+      resize: vertical;
+      min-height: 40px;
+      max-height: 120px;
+      line-height: 1.5;
+      font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), transform 0.1s ease-out;
+    }
+
+    .key-value:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
+      background: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .key-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .key-footer-left {
+      font-size: 10px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .key-pill {
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .key-badge {
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 999px;
+      background: rgba(30, 64, 175, 0.95);
+      border: 1px solid rgba(191, 219, 254, 0.9);
+      color: #e5e7eb;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .key-footer-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .copy-toast {
+      position: fixed;
+      inset-inline: 0;
+      bottom: 16px;
+      margin-inline: auto;
+      max-width: 220px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(52, 211, 153, 0.8);
+      color: #bbf7d0;
+      padding: 6px 11px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      box-shadow: 0 18px 32px rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(16px);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 0.16s ease-out, transform 0.16s ease-out;
+      z-index: 40;
+    }
+
+    .copy-toast.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .copy-toast-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 0 0, #a7f3d0, #22c55e);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #022c22;
+      font-size: 11px;
+    }
+
+    .copy-toast-text {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* MODALS (inline, lightweight) */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.98));
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+      padding: 16px;
+    }
+
+    .modal-backdrop.visible {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 360px;
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 1));
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      box-shadow: 0 22px 50px rgba(15, 23, 42, 0.98);
+      padding: 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(129, 140, 248, 0.35), transparent 60%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .modal-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .modal-subtitle {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .field-label span:last-child {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .input-pill {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      background: rgba(15, 23, 42, 0.98);
+      padding: 6px 9px;
+      font-size: 12px;
+      color: var(--text);
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), transform 0.1s ease-out;
+    }
+
+    .input-pill::placeholder {
+      color: var(--text-muted);
+    }
+
+    .input-pill:focus {
+      border-color: rgba(129, 140, 248, 0.95);
+      box-shadow: var(--focus-ring);
+      background: rgba(15, 23, 42, 1);
+      transform: translateY(-0.5px);
+    }
+
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .modal-footer-left {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .modal-footer-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .text-danger {
+      color: var(--danger);
+    }
+  </style>
+</head>
+<body>
+  <div class="vault-shell">
+    <div class="vault-inner">
+      <!-- HEADER -->
+      <header class="vault-header">
+        <div class="header-left">
+          <div class="vault-logo">
+            <div class="vault-logo-inner">V</div>
+          </div>
+          <div class="header-text">
+            <div class="header-title-row">
+              <div class="vault-title">Ultra Vault</div>
+              <div class="meta-pill">
+                <span class="meta-dot"></span>
+                <span>Business Creational · Keys</span>
+              </div>
+            </div>
+            <div class="header-meta">
+              <span>Local-first secure snippets</span>
+              <span>·</span>
+              <span>Folders, keys & one-tap copy</span>
+            </div>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="header-search">
+            <input id="globalsearch" type="search" placeholder="Search across folders & keys…" />
+            <span class="kbd">Ctrl ⌃ + K</span>
+          </div>
+          <div class="header-cta">
+            <button id="addFolderBtn" class="btn btn-primary">
+              <span>New Folder</span>
+              <span>＋</span>
+            </button>
+            <button id="quickAddKeyBtn" class="btn btn-ghost">
+              <span>Quick Key</span>
+              <span>⌘ + ↵</span>
+            </button>
+            <button id="infoBtn" class="btn-icon" title="About this vault">
+              ?
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-section-label">
+          <span>Folders</span>
+          <span id="folderCountLabel">0 total</span>
+        </div>
+        <div id="folderList" class="folder-list"></div>
+        <div class="sidebar-footer">
+          <div class="sidebar-foot-left">
+            <span>Local only · Private</span>
+            <span>Auto-saves as you type</span>
+          </div>
+          <div class="sidebar-foot-right">
+            <span class="status-dot"></span>
+            <span style="font-size: 10px; color: var(--text-soft);">Live</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <div class="main-heading-row">
+          <div class="main-heading-left">
+            <div class="breadcrumb">
+              <span>Heading</span>
+              <span>→</span>
+              <span>Business Creational</span>
+              <span>→</span>
+              <span class="current" id="breadcrumbCurrent">No folder selected</span>
+            </div>
+            <div class="heading-title">
+              <span id="mainTitle">Your Vault Workspace</span>
+              <span class="heading-pill">
+                <span id="keyCountLabel">0 keys</span>
+              </span>
+            </div>
+          </div>
+          <div class="main-heading-right">
+            <div class="chip">
+              <span>View:</span>
+              <strong>Card Grid</strong>
+            </div>
+            <div class="chip">
+              <span>Storage:</span>
+              <strong>LocalStorage</strong>
+            </div>
+          </div>
+        </div>
+
+        <section class="main-body">
+          <div class="main-body-inner">
+            <div class="main-toolbar">
+              <div class="toolbar-left">
+                <div class="tag">
+                  <span class="tag-dot"></span>
+                  <span id="activeFolderTag">Select or create a folder to begin</span>
+                </div>
+              </div>
+              <div class="toolbar-right">
+                <span class="chip" id="searchChip" style="display:none;">
+                  <span>Filtering for:</span>
+                  <strong id="searchChipText"></strong>
+                </span>
+                <div class="divider"></div>
+                <span class="chip">
+                  <span>Tip:</span>
+                  <span>Use “Copy” to copy any value or secret</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Quick add row for fast input -->
+            <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:6px;">
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <input id="quickLabelInput" class="input-pill" style="flex:1 1 160px;" placeholder="Label (e.g. Password, API key, note…)" />
+                <input id="quickSecretInput" type="checkbox" style="width:14px; height:14px; align-self:center;" />
+                <span style="font-size:11px; color:var(--text-soft); align-self:center;">Hide on screen</span>
+                <button id="quickAddValueBtn" class="btn btn-primary">Add</button>
+              </div>
+              <textarea id="quickValueInput" class="key-value" style="min-height:46px; max-height:90px;" placeholder="Value to store (will be saved in the selected folder)…"></textarea>
+            </div>
+
+            <div id="keysContainer" class="keys-container">
+              <div id="emptyState" class="empty-state">
+                <div class="empty-icon">⌘</div>
+                <div class="empty-title">Organize your business keys</div>
+                <div class="empty-subtitle">
+                  Start by creating a folder (e.g. “Stripe Production” or “Client A – Onboarding”) then add keys / lines under it.
+                </div>
+                <button id="emptyNewFolderBtn" class="btn btn-primary">
+                  <span>Create First Folder</span>
+                </button>
+              </div>
+              <div id="keysGrid" class="keys-grid" style="display:none;"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Copy Toast -->
+  <div id="copyToast" class="copy-toast">
+    <div class="copy-toast-icon">✓</div>
+    <div id="copyToastText" class="copy-toast-text">Copied to clipboard</div>
+  </div>
+
+  <!-- Modal: New / Edit Folder -->
+  <div id="folderModalBackdrop" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-inner">
+        <div class="modal-header">
+          <div>
+            <div id="folderModalTitle" class="modal-title">New Folder</div>
+            <div id="folderModalSubtitle" class="modal-subtitle">Create a logical group for your business keys.</div>
+          </div>
+          <button id="folderModalClose" class="btn-icon" title="Close">✕</button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <div class="field-label">
+              <span>Folder name</span>
+              <span>e.g. “Client A – Onboarding”</span>
+            </div>
+            <input id="folderNameInput" class="input-pill" type="text" placeholder="Folder name…" />
+          </div>
+          <div>
+            <div class="field-label">
+              <span>Category (optional)</span>
+              <span>Appears as subtitle</span>
+            </div>
+            <input id="folderCategoryInput" class="input-pill" type="text" placeholder="e.g. Billing · Production" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="modal-footer-left">
+            <span>Saved locally · no network calls</span>
+          </div>
+          <div class="modal-footer-right">
+            <button id="folderModalCancel" class="btn btn-ghost">Cancel</button>
+            <button id="folderModalSave" class="btn btn-primary">Save Folder</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: New / Edit Key -->
+  <div id="keyModalBackdrop" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-inner">
+        <div class="modal-header">
+          <div>
+            <div id="keyModalTitle" class="modal-title">New Key / Line</div>
+            <div id="keyModalSubtitle" class="modal-subtitle">Attach a label and a value to this key.</div>
+          </div>
+          <button id="keyModalClose" class="btn-icon" title="Close">✕</button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <div class="field-label">
+              <span>Key label</span>
+              <span>e.g. “Stripe Secret Key”</span>
+            </div>
+            <input id="keyLabelInput" class="input-pill" type="text" placeholder="Key label…" />
+          </div>
+          <div>
+            <div class="field-label">
+              <span>Value</span>
+              <span>Stored only in this browser</span>
+            </div>
+            <textarea id="keyValueInput" class="key-value" style="min-height: 70px; max-height: 150px;" placeholder="Paste or type the value here…"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="modal-footer-left">
+            <span>Tip: Use descriptive labels so keys are easy to scan later.</span>
+          </div>
+          <div class="modal-footer-right">
+            <button id="keyModalCancel" class="btn btn-ghost">Cancel</button>
+            <button id="keyModalSave" class="btn btn-primary">Save Key</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "ultra-vault-state-v1";
+
+      /** @typedef {{ id: string; name: string; category?: string; createdAt: number; updatedAt: number; keys: VaultKey[] }} VaultFolder */
+      /** @typedef {{ id: string; label: string; value: string; createdAt: number; updatedAt: number }} VaultKey */
+
+      /** @type {{ folders: VaultFolder[]; activeFolderId: string | null }} */
+      let state = {
+        folders: [],
+        activeFolderId: null
+      };
+
+      // DOM references
+      const folderListEl = document.getElementById("folderList");
+      const folderCountLabelEl = document.getElementById("folderCountLabel");
+      const breadcrumbCurrentEl = document.getElementById("breadcrumbCurrent");
+      const mainTitleEl = document.getElementById("mainTitle");
+      const keyCountLabelEl = document.getElementById("keyCountLabel");
+      const activeFolderTagEl = document.getElementById("activeFolderTag");
+      const keysContainerEl = document.getElementById("keysContainer");
+      const keysGridEl = document.getElementById("keysGrid");
+      const emptyStateEl = document.getElementById("emptyState");
+      const searchInputEl = document.getElementById("globalsearch");
+      const searchChipEl = document.getElementById("searchChip");
+      const searchChipTextEl = document.getElementById("searchChipText");
+      const copyToastEl = document.getElementById("copyToast");
+      const copyToastTextEl = document.getElementById("copyToastText");
+      const quickLabelInputEl = document.getElementById("quickLabelInput");
+      const quickValueInputEl = document.getElementById("quickValueInput");
+      const quickSecretInputEl = document.getElementById("quickSecretInput");
+      const quickAddValueBtnEl = document.getElementById("quickAddValueBtn");
+
+      // Modals
+      const folderModalBackdropEl = document.getElementById("folderModalBackdrop");
+      const folderModalTitleEl = document.getElementById("folderModalTitle");
+      const folderModalSubtitleEl = document.getElementById("folderModalSubtitle");
+      const folderNameInputEl = document.getElementById("folderNameInput");
+      const folderCategoryInputEl = document.getElementById("folderCategoryInput");
+
+      const keyModalBackdropEl = document.getElementById("keyModalBackdrop");
+      const keyModalTitleEl = document.getElementById("keyModalTitle");
+      const keyModalSubtitleEl = document.getElementById("keyModalSubtitle");
+      const keyLabelInputEl = document.getElementById("keyLabelInput");
+      const keyValueInputEl = document.getElementById("keyValueInput");
+
+      // Action buttons
+      const addFolderBtn = document.getElementById("addFolderBtn");
+      const emptyNewFolderBtn = document.getElementById("emptyNewFolderBtn");
+      const quickAddKeyBtn = document.getElementById("quickAddKeyBtn");
+      const infoBtn = document.getElementById("infoBtn");
+
+      // Modal buttons
+      const folderModalCloseBtn = document.getElementById("folderModalClose");
+      const folderModalCancelBtn = document.getElementById("folderModalCancel");
+      const folderModalSaveBtn = document.getElementById("folderModalSave");
+
+      const keyModalCloseBtn = document.getElementById("keyModalClose");
+      const keyModalCancelBtn = document.getElementById("keyModalCancel");
+      const keyModalSaveBtn = document.getElementById("keyModalSave");
+
+      // Misc
+      let folderModalEditingId = null;
+      let keyModalEditingId = null;
+      let copyToastTimeout = null;
+      let searchTerm = "";
+
+      // --- Helpers ---------------------------------------------------------
+
+      function uuid() {
+        return "xxxxxx-4xxx-yxxx".replace(/[xy]/g, function (c) {
+          const r = (Math.random() * 16) | 0;
+          const v = c === "x" ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        });
+      }
+
+      function loadState() {
+        try {
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            seedInitialState();
+            return;
+          }
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.folders)) {
+            state.folders = parsed.folders;
+            state.activeFolderId = parsed.activeFolderId || (parsed.folders[0]?.id ?? null);
+          } else {
+            seedInitialState();
+          }
+        } catch (e) {
+          console.error("Failed to load vault state:", e);
+          seedInitialState();
+        }
+      }
+
+      function saveState() {
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+          console.error("Failed to save vault state:", e);
+        }
+      }
+
+      function seedInitialState() {
+        const now = Date.now();
+        const folderId = uuid();
+        const sampleFolder = {
+          id: folderId,
+          name: "Business Creational · Demo",
+          category: "Sample workspace",
+          createdAt: now,
+          updatedAt: now,
+          keys: [
+            {
+              id: uuid(),
+              label: "LLC Registration – Legal Name",
+              value: "ACME Ventures LLC",
+              createdAt: now,
+              updatedAt: now
+            },
+            {
+              id: uuid(),
+              label: "Primary Contact Email",
+              value: "founder@acme-ventures.com",
+              createdAt: now,
+              updatedAt: now
+            },
+            {
+              id: uuid(),
+              label: "Stripe Live Secret Key",
+              value: "sk_live_xxx_replace_me_xxx",
+              createdAt: now,
+              updatedAt: now
+            }
+          ]
+        };
+        state.folders = [sampleFolder];
+        state.activeFolderId = folderId;
+        saveState();
+      }
+
+      function getActiveFolder() {
+        if (!state.activeFolderId) return null;
+        return state.folders.find((f) => f.id === state.activeFolderId) || null;
+      }
+
+      function formatDateShort(timestamp) {
+        const d = new Date(timestamp);
+        return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      }
+
+      function debounce(fn, delay) {
+        let t = null;
+        return function (...args) {
+          clearTimeout(t);
+          t = setTimeout(() => fn.apply(this, args), delay);
+        };
+      }
+
+      function showToastCopy(message) {
+        copyToastTextEl.textContent = message || "Copied to clipboard";
+        copyToastEl.classList.add("visible");
+        clearTimeout(copyToastTimeout);
+        copyToastTimeout = setTimeout(() => {
+          copyToastEl.classList.remove("visible");
+        }, 1600);
+      }
+
+      function copyToClipboard(text, label) {
+        if (!text) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(
+            () => showToastCopy(label ? `Copied “${label}”` : "Copied to clipboard"),
+            () => fallbackCopy(text, label)
+          );
+        } else {
+          fallbackCopy(text, label);
+        }
+      }
+
+      function fallbackCopy(text, label) {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.style.position = "fixed";
+        area.style.insetInlineStart = "-9999px";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        try {
+          document.execCommand("copy");
+          showToastCopy(label ? `Copied “${label}”` : "Copied to clipboard");
+        } catch (e) {
+          console.error("Copy failed", e);
+        } finally {
+          document.body.removeChild(area);
+        }
+      }
+
+      // --- Rendering -------------------------------------------------------
+
+      function render() {
+        renderSidebar();
+        renderMain();
+      }
+
+      function renderSidebar() {
+        folderListEl.innerHTML = "";
+        const folders = state.folders;
+        folderCountLabelEl.textContent = `${folders.length} folder${folders.length === 1 ? "" : "s"}`;
+
+        folders.forEach((folder, index) => {
+          const item = document.createElement("div");
+          item.className = "folder-item";
+          if (folder.id === state.activeFolderId) {
+            item.classList.add("active");
+          }
+
+          const main = document.createElement("div");
+          main.className = "folder-main";
+
+          const badge = document.createElement("div");
+          badge.className = "folder-badge";
+          badge.textContent = String(index + 1);
+
+          const textWrap = document.createElement("div");
+          textWrap.className = "folder-text";
+
+          const nameEl = document.createElement("div");
+          nameEl.className = "folder-name";
+          nameEl.textContent = folder.name || "Untitled folder";
+
+          const metaEl = document.createElement("div");
+          metaEl.className = "folder-meta";
+          const keysCount = folder.keys.length;
+          const parts = [];
+          parts.push(`${keysCount} key${keysCount === 1 ? "" : "s"}`);
+          if (folder.category) parts.push(folder.category);
+          parts.push(`Updated ${formatDateShort(folder.updatedAt)}`);
+          metaEl.textContent = parts.join(" · ");
+
+          textWrap.appendChild(nameEl);
+          textWrap.appendChild(metaEl);
+
+          main.appendChild(badge);
+          main.appendChild(textWrap);
+
+          const actions = document.createElement("div");
+          actions.className = "folder-actions";
+
+          const editBtn = document.createElement("button");
+          editBtn.className = "icon-btn";
+          editBtn.title = "Rename / edit folder";
+          editBtn.textContent = "✎";
+          editBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openFolderModal(folder.id);
+          });
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.className = "icon-btn danger";
+          deleteBtn.title = "Delete folder";
+          deleteBtn.textContent = "✕";
+          deleteBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const confirmed = window.confirm(
+              `Delete folder “${folder.name || "Untitled"}” and all its keys?`
+            );
+            if (!confirmed) return;
+            deleteFolder(folder.id);
+          });
+
+          actions.appendChild(editBtn);
+          actions.appendChild(deleteBtn);
+
+          item.appendChild(main);
+          item.appendChild(actions);
+
+          item.addEventListener("click", () => {
+            if (state.activeFolderId !== folder.id) {
+              state.activeFolderId = folder.id;
+              saveState();
+              render();
+            }
+          });
+
+          folderListEl.appendChild(item);
+        });
+
+        if (!folders.length) {
+          const empty = document.createElement("div");
+          empty.style.fontSize = "12px";
+          empty.style.color = "var(--text-muted)";
+          empty.style.padding = "10px 6px 8px";
+          empty.textContent = "No folders yet. Create one to get started.";
+          folderListEl.appendChild(empty);
+        }
+      }
+
+      function renderMain() {
+        const folder = getActiveFolder();
+        const totalKeys = folder ? folder.keys.length : 0;
+
+        breadcrumbCurrentEl.textContent = folder ? folder.name || "Untitled folder" : "No folder selected";
+        mainTitleEl.textContent = folder ? folder.name || "Untitled folder" : "Your Vault Workspace";
+        keyCountLabelEl.textContent = `${totalKeys} key${totalKeys === 1 ? "" : "s"}`;
+
+        activeFolderTagEl.textContent = folder
+          ? `Active: ${folder.name || "Untitled folder"}`
+          : "Select or create a folder to begin";
+
+        const isSearching = !!searchTerm.trim();
+
+        if (!folder && !state.folders.length) {
+          emptyStateEl.style.display = "flex";
+          keysGridEl.style.display = "none";
+          return;
+        }
+
+        if (!folder) {
+          emptyStateEl.style.display = "flex";
+          keysGridEl.style.display = "none";
+          return;
+        }
+
+        if (!folder.keys.length && !isSearching) {
+          emptyStateEl.style.display = "flex";
+          keysGridEl.style.display = "none";
+        } else {
+          emptyStateEl.style.display = "none";
+          keysGridEl.style.display = "grid";
+        }
+
+        const lowerTerm = searchTerm.trim().toLowerCase();
+        const filteredKeys = isSearching
+          ? folder.keys.filter((k) => {
+              const hay = (k.label + " " + k.value).toLowerCase();
+              return hay.includes(lowerTerm);
+            })
+          : folder.keys;
+
+        keysGridEl.innerHTML = "";
+
+        searchChipEl.style.display = isSearching ? "inline-flex" : "none";
+        if (isSearching) {
+          searchChipTextEl.textContent = searchTerm;
+        }
+
+        if (!filteredKeys.length && isSearching) {
+          const emptySearch = document.createElement("div");
+          emptySearch.className = "empty-state";
+          emptySearch.style.height = "200px";
+          emptySearch.innerHTML =
+            '<div class="empty-title">No results in this folder</div>' +
+            `<div class="empty-subtitle">Nothing matched “${searchTerm}”. Try a different keyword or clear the search.</div>`;
+          keysGridEl.appendChild(emptySearch);
+          return;
+        }
+
+        filteredKeys.forEach((key) => {
+          const card = document.createElement("article");
+          card.className = "key-card";
+
+          const header = document.createElement("div");
+          header.className = "key-header";
+
+          const titleGroup = document.createElement("div");
+          titleGroup.className = "key-title-group";
+
+          const labelRow = document.createElement("div");
+          labelRow.className = "key-label";
+
+          const dot = document.createElement("div");
+          dot.className = "key-dot";
+
+          const titleSpan = document.createElement("span");
+          titleSpan.className = "key-title";
+          titleSpan.textContent = key.label || "Untitled key";
+
+          labelRow.appendChild(dot);
+          labelRow.appendChild(titleSpan);
+
+          const subSpan = document.createElement("div");
+          subSpan.className = "key-sub";
+          subSpan.textContent = `Updated ${formatDateShort(key.updatedAt)}`;
+
+          titleGroup.appendChild(labelRow);
+          titleGroup.appendChild(subSpan);
+
+          const actions = document.createElement("div");
+          actions.className = "key-actions";
+
+          const copyBtn = document.createElement("button");
+          copyBtn.className = "pill-btn";
+          copyBtn.title = "Copy value";
+          copyBtn.innerHTML = '<span>Copy</span>';
+          copyBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            copyToClipboard(key.value, key.label);
+          });
+
+          const editBtn = document.createElement("button");
+          editBtn.className = "pill-btn";
+          editBtn.title = "Edit key";
+          editBtn.textContent = "Edit";
+          editBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openKeyModal(folder.id, key.id);
+          });
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.className = "pill-btn danger";
+          deleteBtn.title = "Delete key";
+          deleteBtn.textContent = "Delete";
+          deleteBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const ok = window.confirm(`Delete key “${key.label || "Untitled key"}”?`);
+            if (!ok) return;
+            deleteKey(folder.id, key.id);
+          });
+
+          actions.appendChild(copyBtn);
+          actions.appendChild(editBtn);
+          actions.appendChild(deleteBtn);
+
+          header.appendChild(titleGroup);
+          header.appendChild(actions);
+
+          const body = document.createElement("div");
+          body.className = "key-body";
+
+          const textarea = document.createElement("textarea");
+          textarea.className = "key-value";
+          textarea.value = key.value || "";
+          textarea.placeholder = "Value…";
+          textarea.addEventListener("input", debounce(() => {
+            key.value = textarea.value;
+            key.updatedAt = Date.now();
+            folder.updatedAt = Date.now();
+            saveState();
+            renderSidebar();
+          }, 250));
+
+          textarea.addEventListener("dblclick", () => {
+            textarea.select();
+            copyToClipboard(textarea.value, key.label);
+          });
+
+          body.appendChild(textarea);
+
+          const footer = document.createElement("div");
+          footer.className = "key-footer";
+
+          const left = document.createElement("div");
+          left.className = "key-footer-left";
+          const folderPill = document.createElement("div");
+          folderPill.className = "key-pill";
+          folderPill.textContent = folder.name || "Folder";
+          left.appendChild(folderPill);
+
+          const right = document.createElement("div");
+          right.className = "key-footer-right";
+          const badge = document.createElement("span");
+          badge.className = "key-badge";
+          badge.textContent = "KEY";
+          const meta = document.createElement("span");
+          meta.textContent = `Created ${formatDateShort(key.createdAt)}`;
+          right.appendChild(badge);
+          right.appendChild(meta);
+
+          footer.appendChild(left);
+          footer.appendChild(right);
+
+          card.appendChild(header);
+          card.appendChild(body);
+          card.appendChild(footer);
+
+          keysGridEl.appendChild(card);
+        });
+      }
+
+      // --- Folder operations ----------------------------------------------
+
+      function createFolder(name, category) {
+        const now = Date.now();
+        const folder = {
+          id: uuid(),
+          name: name || "Untitled folder",
+          category: category || "",
+          createdAt: now,
+          updatedAt: now,
+          keys: []
+        };
+        state.folders.push(folder);
+        state.activeFolderId = folder.id;
+        saveState();
+        render();
+      }
+
+      function updateFolder(id, name, category) {
+        const folder = state.folders.find((f) => f.id === id);
+        if (!folder) return;
+        folder.name = name || "Untitled folder";
+        folder.category = category || "";
+        folder.updatedAt = Date.now();
+        saveState();
+        render();
+      }
+
+      function deleteFolder(id) {
+        const idx = state.folders.findIndex((f) => f.id === id);
+        if (idx === -1) return;
+        state.folders.splice(idx, 1);
+        if (state.activeFolderId === id) {
+          state.activeFolderId = state.folders[0]?.id || null;
+        }
+        saveState();
+        render();
+      }
+
+      // --- Key operations --------------------------------------------------
+
+      function createKey(folderId, label, value, secret) {
+        const folder = state.folders.find((f) => f.id === folderId);
+        if (!folder) return;
+        const now = Date.now();
+        const key = {
+          id: uuid(),
+          label: label || "Untitled key",
+          value: value || "",
+          secret: !!secret,
+          createdAt: now,
+          updatedAt: now
+        };
+        folder.keys.unshift(key);
+        folder.updatedAt = now;
+        saveState();
+        render();
+      }
+
+      function updateKey(folderId, keyId, label, value, secret) {
+        const folder = state.folders.find((f) => f.id === folderId);
+        if (!folder) return;
+        const key = folder.keys.find((k) => k.id === keyId);
+        if (!key) return;
+        key.label = label || "Untitled key";
+        key.value = value || "";
+        key.secret = !!secret;
+        key.updatedAt = Date.now();
+        folder.updatedAt = Date.now();
+        saveState();
+        render();
+      }
+
+      function deleteKey(folderId, keyId) {
+        const folder = state.folders.find((f) => f.id === folderId);
+        if (!folder) return;
+        const idx = folder.keys.findIndex((k) => k.id === keyId);
+        if (idx === -1) return;
+        folder.keys.splice(idx, 1);
+        folder.updatedAt = Date.now();
+        saveState();
+        render();
+      }
+
+      // --- Modals ----------------------------------------------------------
+
+      function openFolderModal(folderId) {
+        folderModalEditingId = folderId || null;
+        if (folderId) {
+          const folder = state.folders.find((f) => f.id === folderId);
+          if (!folder) return;
+          folderModalTitleEl.textContent = "Edit Folder";
+          folderModalSubtitleEl.textContent = "Update this grouping for your keys.";
+          folderNameInputEl.value = folder.name || "";
+          folderCategoryInputEl.value = folder.category || "";
+        } else {
+          folderModalTitleEl.textContent = "New Folder";
+          folderModalSubtitleEl.textContent = "Create a logical group for your business keys.";
+          folderNameInputEl.value = "";
+          folderCategoryInputEl.value = "";
+        }
+        folderModalBackdropEl.classList.add("visible");
+        setTimeout(() => folderNameInputEl.focus(), 10);
+      }
+
+      function closeFolderModal() {
+        folderModalBackdropEl.classList.remove("visible");
+        folderModalEditingId = null;
+      }
+
+      function handleFolderModalSave() {
+        const name = folderNameInputEl.value.trim();
+        const category = folderCategoryInputEl.value.trim();
+        if (folderModalEditingId) {
+          updateFolder(folderModalEditingId, name, category);
+        } else {
+          createFolder(name, category);
+        }
+        closeFolderModal();
+      }
+
+      function openKeyModal(folderId, keyId) {
+        if (!folderId) folderId = state.activeFolderId;
+        if (!folderId) {
+          alert("Create or select a folder first.");
+          return;
+        }
+        keyModalEditingId = keyId || null;
+        keyModalBackdropEl.dataset.folderId = folderId;
+        if (keyId) {
+          const folder = state.folders.find((f) => f.id === folderId);
+          const key = folder?.keys.find((k) => k.id === keyId);
+          if (!key) return;
+          keyModalTitleEl.textContent = "Edit Key / Line";
+          keyModalSubtitleEl.textContent = "Update the label or value for this key.";
+          keyLabelInputEl.value = key.label || "";
+          keyValueInputEl.value = key.value || "";
+        } else {
+          keyModalTitleEl.textContent = "New Key / Line";
+          keyModalSubtitleEl.textContent = "Attach a label and a value to this key.";
+          keyLabelInputEl.value = "";
+          keyValueInputEl.value = "";
+        }
+        keyModalBackdropEl.classList.add("visible");
+        setTimeout(() => keyLabelInputEl.focus(), 10);
+      }
+
+      function closeKeyModal() {
+        keyModalBackdropEl.classList.remove("visible");
+        keyModalEditingId = null;
+        delete keyModalBackdropEl.dataset.folderId;
+      }
+
+      function handleKeyModalSave() {
+        const label = keyLabelInputEl.value.trim();
+        const value = keyValueInputEl.value;
+        const secret = keySecretInputEl.checked;
+        const folderId = keyModalBackdropEl.dataset.folderId || state.activeFolderId;
+        if (!folderId) {
+          alert("Create or select a folder first.");
+          return;
+        }
+        if (keyModalEditingId) {
+          updateKey(folderId, keyModalEditingId, label, value, secret);
+        } else {
+          createKey(folderId, label, value);
+        }
+        closeKeyModal();
+      }
+
+      function handleQuickAdd() {
+        const folder = getActiveFolder();
+        if (!folder) {
+          alert("Create or select a folder first.");
+          return;
+        }
+        const label = (quickLabelInputEl.value || "").trim();
+        const value = quickValueInputEl.value;
+        const secret = quickSecretInputEl.checked;
+        if (!value.trim()) {
+          alert("Please enter a value to save.");
+          return;
+        }
+        createKey(folder.id, label, value, secret);
+        quickLabelInputEl.value = "";
+        quickValueInputEl.value = "";
+        quickSecretInputEl.checked = false;
+        quickLabelInputEl.focus();
+      }
+
+      // --- Events ----------------------------------------------------------
+
+      addFolderBtn.addEventListener("click", () => openFolderModal(null));
+      emptyNewFolderBtn.addEventListener("click", () => openFolderModal(null));
+
+      folderModalCloseBtn.addEventListener("click", closeFolderModal);
+      folderModalCancelBtn.addEventListener("click", closeFolderModal);
+      folderModalSaveBtn.addEventListener("click", handleFolderModalSave);
+
+      folderModalBackdropEl.addEventListener("click", (e) => {
+        if (e.target === folderModalBackdropEl) {
+          closeFolderModal();
+        }
+      });
+
+      folderNameInputEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          handleFolderModalSave();
+        }
+      });
+
+      quickAddKeyBtn.addEventListener("click", () => openKeyModal(null, null));
+
+      quickAddValueBtnEl.addEventListener("click", handleQuickAdd);
+      quickValueInputEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          handleQuickAdd();
+        }
+      });
+
+      keyModalCloseBtn.addEventListener("click", closeKeyModal);
+      keyModalCancelBtn.addEventListener("click", closeKeyModal);
+      keyModalSaveBtn.addEventListener("click", handleKeyModalSave);
+
+      keyModalBackdropEl.addEventListener("click", (e) => {
+        if (e.target === keyModalBackdropEl) {
+          closeKeyModal();
+        }
+      });
+
+      infoBtn.addEventListener("click", () => {
+        alert(
+          "Ultra Vault\n\n- Create folders for each business / client / environment.\n- Inside each folder, add labeled keys or lines.\n- Values are saved locally in your browser (no server).\n- Use Ctrl+K to search, double-click a value to copy."
+        );
+      });
+
+      searchInputEl.addEventListener(
+        "input",
+        debounce((e) => {
+          searchTerm = e.target.value || "";
+          renderMain();
+        }, 140)
+      );
+
+      searchChipEl.addEventListener("click", () => {
+        searchTerm = "";
+        searchInputEl.value = "";
+        renderMain();
+      });
+
+      window.addEventListener("keydown", (e) => {
+        // Ctrl+K or Cmd+K -> focus search
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          searchInputEl.focus();
+          searchInputEl.select();
+        }
+        // Cmd+Enter -> quick key in active folder
+        if (e.metaKey && e.key === "Enter") {
+          e.preventDefault();
+          openKeyModal(null, null);
+        }
+        // Escape closes modals
+        if (e.key === "Escape") {
+          if (folderModalBackdropEl.classList.contains("visible")) {
+            closeFolderModal();
+          }
+          if (keyModalBackdropEl.classList.contains("visible")) {
+            closeKeyModal();
+          }
+        }
+      });
+
+      // --- Init ------------------------------------------------------------
+
+      loadState();
+      render();
+    })();
+  </script>
+</body>
+</html>
